@@ -252,6 +252,96 @@
   </div>
 </div>
 <!-- Delete Modal end -->
+
+<!-- Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentModalTitle"></h5>
+      </div>
+      <form action="" method="POST" id="payment-form">
+        <div class="modal-body" id="paymentModalBody">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="form-group">
+                {{ payment_form.main.label(for="main") }}
+                {{ payment_form.main(class_="validate form-control") }}
+                {% for error in payment_form.main.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ payment_form.interest.label(for="interest") }}
+                {{ payment_form.interest(class_="validate form-control") }}
+                {% for error in payment_form.interest.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ payment_form.payment_date.label(for="payment_date") }}
+                {{ payment_form.payment_date(class_="validate form-control") }}
+                {% for error in payment_form.payment_date.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ payment_form.notes.label(for="notes") }}
+                {{ payment_form.notes(class_="form-control") }}
+                {% for error in payment_form.notes.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" value="Simpan" class="btn btn-outline-success">
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Tutup</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Payment Modal end -->
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" role="dialog" aria-labelledby="paymentDetailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentDetailsModalTitle"></h5>
+      </div>
+      <div class="modal-body" id="paymentDetailsModalBody">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="table-responsive">
+              <table class="table table-striped text-center">
+                <thead class="text-uppercase">
+                  <tr>
+                    <th scope="col">Pokok</th>
+                    <th scope="col">Bunga</th>
+                    <th scope="col">Keterangan</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="payment-details-list">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Payment Modal end -->
 {% endblock %}
 
 {% block js_scripts %}
@@ -267,7 +357,6 @@ $(document).ready(function() {
 
     $('#debtorInputModal').modal('show');
   });
-
 
   $(document).on('click','.update-btn',function(e){
     e.preventDefault();
@@ -329,6 +418,34 @@ $(document).ready(function() {
     var form = $(this);
 
     inputDebtor(form);
+  });
+
+  $(document).on('click','.payment-btn',function(e){
+    e.preventDefault();
+    var btn = $(this);
+    var url = btn.attr('href');
+    var name = btn.attr('id').split('-')[1]
+
+    $('#payment-form').attr('action', url);
+    $('#paymentModalTitle').html('Pembayaran ' + name);
+
+    $('#paymentModal').modal('show');
+  });
+
+  $(document).on('click','.payment-detail-btn',function(e) {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.attr('href');
+    var modal = $('#paymentDetailsModal')
+
+    getPaymentDetails(url, modal)
+  })
+
+  $("#payment-form").submit(function(e) {
+    e.preventDefault();
+    var form = $(this);
+
+    pay(form);
   });
 
   getDebtors();
@@ -393,8 +510,8 @@ function getDebtorDetail(url, modal) {
       $('#details-modal-key-person').html(res['key_person']);
       $('#details-modal-contact-person').html(res['contact_person']);
       $('#details-modal-credit-aggreement').html(res['credit_aggreement']);
-      $('#details-modal-total-credits').html(res['total_credits']);
-      $('#details-modal-reduced-credits').html(res['reduced_credits']);
+      $('#details-modal-total-credits').html('Rp ' + convertToCurrencyFormat(res['total_credits']));
+      $('#details-modal-reduced-credits').html('Rp ' + convertToCurrencyFormat(res['reduced_credits']));
       $('#details-modal-tenor').html(res['tenor']);
       $('#details-modal-start-date').html(res['fancy_start_date']);
       $('#details-modal-end-date').html(res['fancy_end_date']);
@@ -423,6 +540,49 @@ function deleteDebtor(url, name) {
   });
 }
 
+function pay(form) {
+  $.ajax({
+    url: form.attr('action'),
+    type: "POST",
+    data: form.serialize(),
+    success: function(res) {
+      $.notify("Debitur " + res['name'] + " berhasil melakukan pembayaran!", {position: "top center", className: "success"});
+      $('#paymentModal').modal('hide');
+
+      getDebtors();
+    },
+    error: function(res) {
+      $.notify('Pembayaran debitur tidak berhasil. Silahkan coba lagi!',  {position: "top center", className: "error"})
+    }
+  });
+}
+
+function getPaymentDetails(url, modal) {
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function(res){
+      $('#paymentDetailsModalTitle').html('Detail Pembayaran Debitur - ' + res['debtor']);
+      $('#payment-details-list').html('');
+
+      res['payments'].forEach(function(item) {
+        $('<tr scope="row">').append(
+          $('<td colspan="4">').text(item['fancy_payment_date']),
+        ).appendTo('#payment-details-list');
+
+        $('<tr scope="row">').append(
+          $('<td>').text('Rp ' + convertToCurrencyFormat(item['main'])),
+          $('<td>').text('Rp ' + convertToCurrencyFormat(item['interest'])),
+          $('<td>').text(item['notes']),
+          $('<td>').text('Rp ' + convertToCurrencyFormat(item['main'] + item['interest'])),
+        ).appendTo('#payment-details-list');
+      });
+
+      modal.modal('show');
+    }
+  });
+}
+
 function getDebtors() {
   $.ajax({
     'url': "{{ url_for('debtor.list') }}",
@@ -434,14 +594,14 @@ function getDebtors() {
         $('<td>').text(item['name']),
         $('<td>').text(item['ship']),
         $('<td>').text(item['phone_number']),
-        $('<td>').text(item['total_credits']),
-        $('<td>').text(item['reduced_credits']),
+        $('<td>').text('Rp ' + convertToCurrencyFormat(item['total_credits'])),
+        $('<td>').text('Rp ' + convertToCurrencyFormat(item['reduced_credits'])),
         {% if current_user.username == 'admin' %}
         $('<td>').append(
           $('<div class="btn-group" role="group">').append(
             $('<a class="btn btn-primary detail-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Detail">').html('<i class="ti-eye"></i>'),
-            $('<a class="btn btn-dark payment-detail-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Detail Pembayaran">').html('<i class="ti-receipt"></i>'),
-            $('<a class="btn btn-light pay-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Bayar">').html('<i class="ti-wallet"></i>'),
+            $('<a class="btn btn-dark payment-detail-btn" id="paymentdetail-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/payment-detail" data-toggle="tooltip" title="Detail Pembayaran">').html('<i class="ti-receipt"></i>'),
+            $('<a class="btn btn-light payment-btn" id="pay-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/pay" data-toggle="tooltip" title="Bayar">').html('<i class="ti-wallet"></i>'),
             $('<a class="btn btn-info update-btn" id="update-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/update" data-toggle="tooltip" title="Sunting">').html('<i class="ti-pencil">'),
             $('<a class="btn btn-danger delete-modal-btn" id="delete-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/delete" data-toggle="tooltip" title="Hapus">').html('<i class="ti-trash">'),
           ),
@@ -451,5 +611,9 @@ function getDebtors() {
     });
   });
 }
+
+function convertToCurrencyFormat(_str) {
+  return _str.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.")
+} 
 </script>
 {% endblock %}

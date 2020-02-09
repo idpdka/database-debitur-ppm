@@ -1,6 +1,6 @@
 import json
 from app import db
-from app.forms import DebtorForm
+from app.forms import DebtorForm, PaymentForm
 from app.models import Debtor, Payment
 from datetime import datetime
 from flask import Blueprint, Response, jsonify, json, flash, render_template, redirect, request, session
@@ -11,21 +11,38 @@ debtor = Blueprint('debtor', __name__, url_prefix='/admin/debtor')
 @debtor.route('/')
 def index():
   debtor_form = DebtorForm() 
-  return render_template('admin/debtor/index.html', debtor_form=debtor_form)
+  payment_form = PaymentForm()
+
+  return render_template('admin/debtor/index.html', debtor_form=debtor_form, payment_form=payment_form)
 
 @debtor.route('/list')
 def list():
   debtors = [i.to_dict() for i in Debtor.query.all()]
 
   for debtor in debtors:
-    debtor['reduced_credits'] = debtor['total_credits']
+    reducers = 0
+    payments = Payment.query.filter_by(debtor_id=debtor['id'])
+
+    for payment in payments:
+      payment = payment.to_dict()
+      reducers += payment['main'] + payment['interest']
+
+    debtor['reduced_credits'] = debtor['total_credits'] - reducers
 
   return jsonify(debtors), 200
 
 @debtor.route('/<identifier>/detail', methods=['GET'])
 def detail(identifier):
   debtor = Debtor.query.get(identifier).to_dict()
-  debtor['reduced_credits'] = debtor['total_credits']
+
+  reducers = 0
+  payments = Payment.query.filter_by(debtor_id=debtor['id'])
+
+  for payment in payments:
+    payment = payment.to_dict()
+    reducers += payment['main'] + payment['interest']
+
+  debtor['reduced_credits'] = debtor['total_credits'] - reducers
 
   return jsonify(debtor), 200
 
@@ -110,23 +127,40 @@ def delete(identifier):
 
   return response 
 
-@debtor.route('<identifier>/payment', methods=['POST'])
+@debtor.route('<identifier>/payment-detail', methods=['GET'])
 def payment(identifier):
+  debtor = Debtor.query.get(identifier).to_dict()
+  payments = [i.to_dict() for i in Payment.query.filter_by(debtor_id=identifier)]
+
+  res = {
+    'debtor': debtor['name'],
+    'payments': payments,
+  }
+
+  print(res)
+
+  return jsonify(res), 200
+
+@debtor.route('/<identifier>/pay', methods=['POST'])
+def pay(identifier):
   try:
+    payment = Payment(
+      main=request.form['main'],
+      interest=request.form['interest'],
+      payment_date=datetime.strptime(request.form['payment_date'], "%Y-%m-%d"),
+      notes=request.form['notes'],
+      debtor_id=identifier,
+    )
+
+    db.session.add(payment)
+    db.session.commit()
+
     response = jsonify({"success": True})
     response.status_code = 200
-  except:
-    response = jsonify({"success": False})
-    response.status_code = 500
+  except Exception as e:
+    db.session.rollback()
+    print(e)
 
-  return response 
-
-@debtor.route('/<identifier>/payment', methods=['POST'])
-def pay():
-  try:
-    response = jsonify({"success": True})
-    response.status_code = 200
-  except:
     response = jsonify({"success": False})
     response.status_code = 500
 

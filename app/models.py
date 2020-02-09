@@ -66,8 +66,20 @@ class Payment(db.Model):
     main = db.Column(db.Integer)
     interest = db.Column(db.Integer)
     payment_date = db.Column(db.DateTime, index=True)
-    note = db.Column(db.String(200))
+    notes = db.Column(db.String(150))
     debtor_id = db.Column(db.Integer, db.ForeignKey('debtor.id'))
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'main': self.main,
+            'interest': self.interest,
+            'notes': self.notes,
+            'fancy_payment_date': datetime.strftime(self.payment_date, '%d %B %Y'),
+            'payment_date': datetime.strftime(self.payment_date, '%Y-%m-%d'),
+        }
+
+        return data
 
     # def __repr__(self):
     #     return '<Payment {}>'.format(self.name)

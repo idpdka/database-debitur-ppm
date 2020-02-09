@@ -27,8 +27,7 @@ class DebtorForm(FlaskForm):
     end_date = DateField("Tanggal Akhir", format='%Y-%m-%d')
 
 class PaymentForm(FlaskForm):
-    debtor_id = HiddenField('ID Debitur')
-    main = StringField('Pokok', validators=[DataRequired()])
-    interest = StringField('Bunga', validators=[DataRequired()])
+    main = IntegerField('Pokok', validators=[DataRequired()])
+    interest = IntegerField('Bunga', validators=[DataRequired()])
     payment_date = DateField("Tanggal Pembayaran", format='%Y-%m-%d')
     notes = StringField('Keterangan')
