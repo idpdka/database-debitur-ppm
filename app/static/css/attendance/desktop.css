@@ -1,0 +1,61 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+html {
+  display: table;
+  margin: auto;
+}
+
+body {
+  display: table-cell;
+  vertical-align: middle;
+  background: #4ECDC4;
+}
+
+#login-mode {
+  width: 100%;
+}
+
+.carousel {
+  height: 500px;
+  width: 100% !important;
+}
+
+.carousel .carousel-item {
+  opacity: 1 !important;
+}
+
+.card {
+  width: 300px;
+}
+
+#standby-mode {
+  font-weight: 300;
+  position: absolute;
+  z-index: -999;
+}
+
+#background-standby {
+  position: fixed;
+  background: black;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+h1 {
+  margin: 10px;
+}
+
+h2 {
+  margin: 10px;
+}
+
+video, canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

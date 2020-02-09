@@ -1,0 +1,442 @@
+{% extends 'admin/base.html' %}
+
+{% block header %}Daftar Debitur{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Striped table start -->
+  <div class="col-lg-12 mt-3 text-right">
+    <a href="{{ url_for('debtor.create') }}"  class="btn btn-success create-btn">Tambah Karyawan</a><br><br>
+  </div>
+  <div class="col-lg-12 mt-3">
+    <div class="single-table">
+      <div class="table-responsive">
+        <table class="table table-striped text-center">
+          <thead class="text-uppercase">
+            <tr>
+              <th scope="col">Nama</th>
+              <th scope="col">Kapal</th>
+              <th scope="col">No. Telepon</th>
+              <th scope="col">Piutang Total</th>
+              <th scope="col">Piutang Saat Ini</th>
+              {% if current_user.username == 'admin' %}
+              <th id="action-header" scope="col">Aksi</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody id="debtor-list">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Striped table end -->
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Create/Update Modal -->
+<div class="modal fade" id="debtorInputModal" tabindex="-1" role="dialog" aria-labelledby="debtorInputModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="debtorInputModalTitle"></h5>
+      </div>
+      <form action="" method="POST" enctype="multipart/form-data" id="input-form">
+        <div class="modal-body">
+          <div class="row">
+            <!-- Striped table start -->
+            <div class="col-lg-12">
+              <div class="form-group">
+                {{ debtor_form.name.label(for="name") }}
+                {{ debtor_form.name(class_="validate form-control", id="input-modal-name") }}
+                {% for error in debtor_form.name.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.ship.label(for="ship") }}
+                {{ debtor_form.ship(class_="validate form-control", id="input-modal-ship") }}
+                {% for error in debtor_form.ship.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.legality.label(for="legality") }}
+                {{ debtor_form.legality(class_="validate form-control", id="input-modal-legality") }}
+                {% for error in debtor_form.legality.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.address.label(for="address") }}
+                {{ debtor_form.address(class_="validate form-control", id="input-modal-address") }}
+                {% for error in debtor_form.address.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.phone_number.label(for="phone_number") }}
+                {{ debtor_form.phone_number(class_="validate form-control", id="input-modal-phone_number") }}
+                {% for error in debtor_form.phone_number.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.key_person.label(for="key_person") }}
+                {{ debtor_form.key_person(class_="validate form-control", id="input-modal-key_person") }}
+                {% for error in debtor_form.key_person.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.contact_person.label(for="contact_person") }}
+                {{ debtor_form.contact_person(class_="validate form-control", id="input-modal-contact_person") }}
+                {% for error in debtor_form.contact_person.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.credit_aggreement.label(for="credit_aggreement") }}
+                {{ debtor_form.credit_aggreement(class_="validate form-control", id="input-modal-credit_aggreement") }}
+                {% for error in debtor_form.credit_aggreement.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.total_credits.label(for="total_credits") }}
+                {{ debtor_form.total_credits(class_="validate form-control", id="input-modal-total_credits") }}
+                {% for error in debtor_form.total_credits.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.tenor.label(for="tenor") }}
+                {{ debtor_form.tenor(class_="validate form-control", id="input-modal-tenor") }}
+                {% for error in debtor_form.tenor.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.start_date.label(for="start_date") }}
+                {{ debtor_form.start_date(class_="validate form-control", id="input-modal-start_date") }}
+                {% for error in debtor_form.start_date.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+
+              <div class="form-group">
+                {{ debtor_form.end_date.label(for="end_date") }}
+                {{ debtor_form.end_date(class_="validate form-control", id="input-modal-end_date") }}
+                {% for error in debtor_form.end_date.errors %}
+                  <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="submit" value="Simpan" class="btn btn-outline-success">
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Tutup</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Create/Update Modal end -->
+
+<!-- Details Modal -->
+<div class="modal fade" id="debtorDetailsModal" tabindex="-1" role="dialog" aria-labelledby="debtorDetailsModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="debtorDetailsModalTitle"></h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- Striped table start -->
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="text-center">
+                  <img height="300" class="img-responsive img-circle" id="details-modal-face-image" src="">
+                </div>
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <th scope="row">ID Pegawai</th>
+                      <td id="details-modal-id"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Nama</th>
+                      <td id="details-modal-name"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Nama Panggilan</th>
+                      <td id="details-modal-nickname"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Jenis Kelamin</th>
+                      <td id="details-modal-gender"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Tipe Akun</th>
+                      <td id="details-modal-acc-type"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Unit</th>
+                      <td id="details-modal-unit"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Posisi</th>
+                      <td id="details-modal-position"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Email</th>
+                      <td id="details-modal-email"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Nomor Telepon</th>
+                      <td id="details-modal-phone-no"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Status Karyawan</th>
+                      <td id="details-modal-status"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Details Modal end -->
+
+<!-- Delete Modal -->
+<div class="modal fade" id="debtorDeleteModal" tabindex="-1" role="dialog" aria-labelledby="debtorDeleteModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="debtorDeleteModalTitle"></h5>
+      </div>
+      <div class="modal-body" id="debtorDeleteModalBody"></div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-success delete-btn" id="" href="">Ya</a>
+        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Tidak</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Delete Modal end -->
+{% endblock %}
+
+{% block js_scripts %}
+<script>
+$(document).ready(function() {
+  $(document).on('click','.create-btn',function(e){
+    e.preventDefault();
+    var btn = $(this);
+    var url = btn.attr('href');
+
+    $('#input-form').attr('action', url);
+    $('#debtorInputModalTitle').html('Tambah Debitur');
+
+    $('#debtorInputModal').modal('show');
+  });
+
+
+  $(document).on('click','.update-btn',function(e){
+    e.preventDefault();
+    var btn = $(this);
+    var url = btn.attr('href');
+    var name = btn.attr('id').split('-')[1]
+
+    getDebtorUpdateDetail(url.replace('update', 'detail'))
+    $('#input-form').attr('action', url);
+    $('#debtorInputModalTitle').html('Sunting Debitur - ' + name);
+
+    $('#debtorInputModal').modal('show');
+  });
+
+  $(document).on('click','.delete-modal-btn', function(e) {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.attr('href');
+    var name = btn.attr('id').split('-')[1]
+
+    $('#debtorDeleteModalTitle').html('Hapus Debitur - ' + name);
+    $('#debtorDeleteModalBody').html('Anda yakin untuk menghapus debitur: ' + name);
+    $('.delete-btn').attr('href', url);
+    $('.delete-btn').attr('id', 'delete-' + name);
+
+    $('#debtorDeleteModal').modal('show');
+  });
+
+  $(document).on('click','.delete-btn', function(e) {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.attr('href');
+    var name = btn.attr('id').split('-')[1];
+
+    deleteDebtor(url, name);
+  });
+
+  $(document).on('click','.enable-toggle',function(e) {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.attr('href');
+    var type = url.slice(-1);
+    var name = btn.attr('id').split('-')[1];
+
+    toggleDebtorEnableStatus(url, type, name);
+  });
+
+  $(document).on('click','.detail-btn',function(e) {
+    e.preventDefault();
+    var btn = $(this)
+    var url = btn.attr('href');
+    var modal = $('#debtorDetailsModal')
+
+    getDebtorDetail(url, modal)
+  })
+
+  $("#input-form").submit(function(e) {
+    e.preventDefault();
+    var form = $(this);
+
+    inputDebtor(form);
+  });
+
+  getDebtors();
+});
+
+function inputDebtor(form) {
+  $.ajax({
+    url: form.attr('action'),
+    type: "POST",
+    data: form.serialize(),
+    success: function(res) {
+      console.log(form.attr('action').split('/'))
+      if (form.attr('action').split('/')[form.attr('action').split('/').length-1] == 'create') {
+        $.notify("Karyawan " + res['name'] + " berhasil ditambahkan!", {position: "top center", className: "success"});
+      } else {
+        $.notify("Karyawan berhasil disunting!", {position: "top center", className: "success"});
+      }
+
+      $('#debtorInputModal').modal('hide');
+      getDebtors();
+    },
+    error: function(res) {
+      $.notify('Registrasi debitur tidak berhasil. Silahkan coba lagi!',  {position: "top center", className: "error"})
+    }
+  });
+}
+
+function getDebtorUpdateDetail(url) {
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function(res){
+      $('#input-modal-id').val(res['detail-person']['nik']);
+      $('#input-modal-name').val(res['name']);
+      $('#input-modal-nickname').val(res['detail-person']['nama_panggilan']);
+      $('#input-modal-gender').val(res['detail-person']['jenis_kelamin']);
+      $('#input-modal-acc-type').val(res['detail-person']['tipe_akun']);
+      $('#input-modal-unit').val(res['group_id']);
+      $('#input-modal-position').val(res['detail-person']['posisi']);
+      $('#input-modal-email').val(res['detail-person']['email']);
+      $('#input-modal-phone-no').val(res['detail-person']['no_telp']);
+      $('#input-modal-status').val(res['detail-person']['status_karyawan']);
+    }
+  });
+}
+
+function getDebtorDetail(url, modal) {
+  $.ajax({
+    url: url,
+    type: "GET",
+    success: function(res){
+      $('#details-modal-face-image').attr('src', res['face_img'])
+      $('#debtorDetailsModalTitle').html('Detail Karyawan - ' + res['name']);
+      $('#details-modal-id').html(res['detail-person']['nik']);
+      $('#details-modal-name').html(res['name']);
+      $('#details-modal-nickname').html(res['detail-person']['nama_panggilan']);
+      $('#details-modal-gender').html(res['detail-person']['jenis_kelamin']);
+      $('#details-modal-acc-type').html(res['detail-person']['tipe_akun']);
+      $('#details-modal-unit').html(res['group_name']);
+      $('#details-modal-position').html(res['detail-person']['posisi']);
+      $('#details-modal-email').html(res['detail-person']['email']);
+      $('#details-modal-phone-no').html(res['detail-person']['no_telp']);
+      $('#details-modal-status').html(res['detail-person']['status_karyawan']);
+
+      modal.modal('show');
+    }
+  });
+}
+
+function deleteDebtor(url, name) {
+  $.ajax({
+    url: url,
+    type: "POST",
+    data: "",
+    success: function(res){
+      res = JSON.parse(res);
+
+      if (res.status_code == 200) {
+        $.notify('Karyawan ' + name + ' berhasil dihapus!', {position: 'top center', className: 'success'});
+        $('#debtorDeleteModal').modal('hide');
+
+        getDebtors();
+      } else {
+        alert('Some errors occured!');
+      }
+    }
+  });
+}
+
+function getDebtors() {
+  $.ajax({
+    'url': "{{ url_for('debtor.list') }}",
+  }).success(function(result){
+    $('#debtor-list').html('');
+
+    result.forEach(function(item) {
+      $('<tr scope="row">').append(
+        $('<td>').text(item['name']),
+        $('<td>').text(item['ship']),
+        $('<td>').text(item['phone_number']),
+        $('<td>').text(item['total_credits']),
+        $('<td>').text(item['reduced_credits']),
+        {% if current_user.username == 'admin' %}
+        $('<td>').append(
+          $('<div class="btn-group" role="group">').append(
+            $('<a class="btn btn-primary detail-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Detail">').html('<i class="ti-eye"></i>'),
+            $('<a class="btn btn-dark payment-detail-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Detail Pembayaran">').html('<i class="ti-receipt"></i>'),
+            $('<a class="btn btn-light pay-btn" href="/admin/debtor/' + item['id'] + '/detail" data-toggle="tooltip" title="Bayar">').html('<i class="ti-wallet"></i>'),
+            $('<a class="btn btn-info update-btn" id="update-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/update" data-toggle="tooltip" title="Sunting">').html('<i class="ti-pencil">'),
+            $('<a class="btn btn-danger delete-modal-btn" id="delete-' + item['name'] + '" href="/admin/debtor/' + item['id'] + '/delete" data-toggle="tooltip" title="Hapus">').html('<i class="ti-trash">'),
+          ),
+        ),
+        {% endif %}
+      ).appendTo('#debtor-list');
+    });
+  });
+}
+</script>
+{% endblock %}

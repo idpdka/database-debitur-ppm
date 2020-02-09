@@ -1,0 +1,172 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}{{ data._page_title }}{% endblock %}
+{% block header %}{{ data._page_title }}{% endblock %}
+
+{% block content %}
+<form action="{{ data._action }}" method="POST" enctype="multipart/form-data" id="myForm">
+
+  <div class="row">
+    <div class="col-md-12 mt-2 mb-2 text-center">
+      <div id="container">
+        <video width="480" height="320" autoplay="true" id="videoElement"></video>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="input-group-append">
+      <label for="photo_string"><strong>Foto Wajah</strong><strong></strong></label>
+      <input type="text" id="photo_status" class="form-control" readonly>
+      <input type="hidden" name="photo_string" id="photo_string" value="">
+      <button class="btn btn-outline-dark" id="capture1" type="button">Ambil</button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="nik"><strong>NIK</strong><strong></strong></label>
+    <input type="text" name="nik" id="nik" value="{{ data.nik }}" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="nama"><strong>Nama</strong><strong></strong></label>
+    <input type="text" name="nama" id="nama" value="{{ data.nama }}" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="nama_panggilan"><strong>Nama Panggilan</strong><strong></strong></label>
+    <input type="text" name="nama_panggilan" id="nama_panggilan" value="{{ data.nama_panggilan }}" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="jenis_kelamin"><strong>Jenis Kelamin</strong><strong></strong></label>
+    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control">
+      <option value="">--</option>
+      <option value="Pria" {{ 'selected' if data.jenis_kelamin=='Pria' else '' }}>Pria</option>
+      <option value="Wanita" {{ 'selected' if data.jenis_kelamin=='Wanita' else '' }}>Wanita</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="tipe_akun"><strong>Tipe Akun</strong><strong></strong></label>
+    <select name="tipe_akun" id="tipe_akun" class="form-control">
+      <option value="">--</option>
+      <option value="Administrator"  {{ 'selected' if data.tipe_akun=='Administrator' else '' }}>Administrator</option>
+      <option value="Staff"  {{ 'selected' if data.tipe_akun=='Staff' else '' }}>Staff</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="unit"><strong>Unit</strong><strong></strong></label>
+    <select name="unit" id="unit" class="form-control">
+      <option value="">--</option>
+      {% for group in data['group'] %}
+        <option value="{{ group['id'] }}"  {{ 'selected' if data.unit==group['id'] else '' }}>{{ group['name'] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="posisi"><strong>Posisi</strong><strong></strong></label>
+    <select name="posisi" id="posisi" class="form-control">
+      <option value="">--</option>
+      <option value="Direktur" {{ 'selected' if data.posisi=='Direktur' else '' }}>Direktur</option>
+      <option value="Team Leader" {{ 'selected' if data.posisi=='Team Leader' else '' }}>Team Leader</option>
+      <option value="Product Owner" {{ 'selected' if data.posisi=='Product Owner' else '' }}>Product Owner</option>
+      <option value="Machine Learning Engineer" {{ 'selected' if data.posisi=='Machine Learning Engineer' else '' }}>Machine Learning Engineer</option>
+      <option value="Data Scientist" {{ 'selected' if data.posisi=='Data Scientist' else '' }}>Data Scientist</option>
+      <option value="Sekretaris" {{ 'selected' if data.posisi=='Sekretaris' else '' }}>Sekretaris</option>
+      <option value="Kepala Bagian" {{ 'selected' if data.posisi=='Kepala Bagian' else '' }}>Kepala Bagian</option>
+      <option value="Recruiter" {{ 'selected' if data.posisi=='Recruiter' else '' }}>Recruiter</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="email"><strong>Email</strong><strong></strong></label>
+    <input type="email" name="email" id="email" value="{{ data.email }}" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="no_telp"><strong>Nomor Telepon</strong><strong></strong></label>
+    <input type="text" name="no_telp" id="no_telp" value="{{ data.no_telp }}" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="status_karyawan"><strong>Status Karyawan</strong><strong></strong></label>
+    <select name="status_karyawan" id="status_karyawan" class="form-control">
+      <option value="">--</option>
+      <option value="Tetap"  {{ 'selected' if data.status_karyawan=='Tetap' else '' }}>Tetap</option>
+      <option value="Kontrak" {{ 'selected' if data.status_karyawan=='Kontrak' else '' }}>Kontrak</option>
+    </select>
+  </div>
+
+  <input type="submit" value="Simpan" class="btn btn-primary">
+
+</form>
+{% endblock %}
+
+{% block js_scripts %}
+  <script>
+    var currentImage = null;
+    var video, $output;
+    var scale = 1;
+    var result = false;
+
+    var video = document.querySelector("#videoElement");
+
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({video: true})
+      .then(function(stream) {
+        video.srcObject = stream;
+      })
+      .catch(function(err0r) {
+        console.log("Something went wrong!");
+      });
+    }
+
+    function initialize() {
+      video = $("#videoElement").get(0);
+
+      $("#capture1").click({photo_id: "1"}, captureImage);
+    }
+
+    function captureImage(event) {
+      event.preventDefault()
+      var btn = $(this)
+      btn.attr('disabled', true);
+      $('#photo_status').css("background-color", '');
+      $('#photo_status').val("Mengambil...");
+
+      var canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth * scale;
+      canvas.height = video.videoHeight * scale;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      setTimeout(function(){
+        btn.attr('disabled', false);
+        $('#photo_string').val(canvas.toDataURL());
+        $('#photo_status').val('Sukses!');
+        $('#photo_status').css("background-color", 'rgb(144, 245, 0)');
+        $.notify("Ambil foto wajah sukses!", {position: "top center", className: "success"});
+      }, 50);
+    }
+
+    $(initialize);
+
+    $("#myForm").submit(function(e){
+      e.preventDefault();
+      $.ajax({
+        url: $(this).attr('action'),
+        type: "POST",
+        data: $("#myForm").serialize(),
+        success: function(res) {
+          location.href = "{{ url_for('employee.view') }}?success=1";
+        },
+        error: function(res) {
+          console.log(res);
+          $.notify('Registrasi karyawan tidak berhasil. Silahkan coba lagi!',  {position: "top center", className: "error"})
+        }
+      });
+    });
+  </script>
+{% endblock %}

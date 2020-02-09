@@ -1,0 +1,53 @@
+html,
+body {
+  height: 100%;
+}
+
+html {
+  display: table;
+  margin: auto;
+}
+
+body {
+  display: table-cell;
+  vertical-align: bottom;
+  background: #4ECDC4;
+}
+
+#login-page {
+  width: 700px;
+}
+
+#standby-mode {
+  font-weight: 300;
+  position: absolute;
+  z-index: -999;
+}
+
+#background-standby {
+  position: fixed;
+  background: black;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+}
+
+h1 {
+  margin: 10px;
+}
+
+h2 {
+  margin: 10px;
+}
+
+img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}

@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block login %}
+  <!-- login area start -->
+  <div class="login-area">
+    <div class="container">
+      <div class="login-box ptb--100">
+        <form method="post" action="{{ url_for('auth.login') }}">
+          {{ form.hidden_tag() }}
+          <div class="login-form-head">
+            <h4>Login</h4>
+          </div>
+          <div class="login-form-body">
+            <div class="form-gp">
+              {{ form.username.label(for="username") }}
+              {{ form.username(class_="validate", id="username") }}
+              {% for error in form.username.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+              <i class="ti-user"></i>
+            </div>
+            <div class="form-gp">
+              {{ form.password.label(for="password") }}
+              {{ form.password(class_="validate", id="password") }}
+              {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+              <i class="ti-lock"></i>
+            </div>
+            <div class="row mb-4 rmber-area">
+              <div class="col-6">
+                <div class="custom-control custom-checkbox mr-sm-2">
+                  {{ form.remember_me(class="custom-control-input", id="remember-me") }}
+                  {{ form.remember_me.label(class="custom-control-input") }}
+                </div>
+              </div>
+            </div>
+            <div class="submit-btn-area">
+              <button id="form_submit" type="submit">Masuk <i class="ti-arrow-right"></i></button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- login area end -->
+{% endblock %}
