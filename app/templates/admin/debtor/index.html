@@ -6,7 +6,7 @@
 <div class="row">
   <!-- Striped table start -->
   <div class="col-lg-12 mt-3 text-right">
-    <a href="{{ url_for('debtor.create') }}"  class="btn btn-success create-btn">Tambah Karyawan</a><br><br>
+    <a href="{{ url_for('debtor.create') }}"  class="btn btn-success create-btn">Tambah Debitur</a><br><br>
   </div>
   <div class="col-lg-12 mt-3">
     <div class="single-table">
@@ -81,7 +81,7 @@
 
               <div class="form-group">
                 {{ debtor_form.phone_number.label(for="phone_number") }}
-                {{ debtor_form.phone_number(class_="validate form-control", id="input-modal-phone_number") }}
+                {{ debtor_form.phone_number(class_="validate form-control", id="input-modal-phone-number") }}
                 {% for error in debtor_form.phone_number.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -89,7 +89,7 @@
 
               <div class="form-group">
                 {{ debtor_form.key_person.label(for="key_person") }}
-                {{ debtor_form.key_person(class_="validate form-control", id="input-modal-key_person") }}
+                {{ debtor_form.key_person(class_="validate form-control", id="input-modal-key-person") }}
                 {% for error in debtor_form.key_person.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -97,7 +97,7 @@
 
               <div class="form-group">
                 {{ debtor_form.contact_person.label(for="contact_person") }}
-                {{ debtor_form.contact_person(class_="validate form-control", id="input-modal-contact_person") }}
+                {{ debtor_form.contact_person(class_="validate form-control", id="input-modal-contact-person") }}
                 {% for error in debtor_form.contact_person.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -105,7 +105,7 @@
 
               <div class="form-group">
                 {{ debtor_form.credit_aggreement.label(for="credit_aggreement") }}
-                {{ debtor_form.credit_aggreement(class_="validate form-control", id="input-modal-credit_aggreement") }}
+                {{ debtor_form.credit_aggreement(class_="validate form-control", id="input-modal-credit-aggreement") }}
                 {% for error in debtor_form.credit_aggreement.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -113,7 +113,7 @@
 
               <div class="form-group">
                 {{ debtor_form.total_credits.label(for="total_credits") }}
-                {{ debtor_form.total_credits(class_="validate form-control", id="input-modal-total_credits") }}
+                {{ debtor_form.total_credits(class_="validate form-control", id="input-modal-total-credits") }}
                 {% for error in debtor_form.total_credits.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -129,7 +129,7 @@
 
               <div class="form-group">
                 {{ debtor_form.start_date.label(for="start_date") }}
-                {{ debtor_form.start_date(class_="validate form-control", id="input-modal-start_date") }}
+                {{ debtor_form.start_date(class_="validate form-control", id="input-modal-start-date") }}
                 {% for error in debtor_form.start_date.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -137,7 +137,7 @@
 
               <div class="form-group">
                 {{ debtor_form.end_date.label(for="end_date") }}
-                {{ debtor_form.end_date(class_="validate form-control", id="input-modal-end_date") }}
+                {{ debtor_form.end_date(class_="validate form-control", id="input-modal-end-date") }}
                 {% for error in debtor_form.end_date.errors %}
                   <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
@@ -164,59 +164,67 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <!-- Striped table start -->
           <div class="col-lg-12">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="text-center">
-                  <img height="300" class="img-responsive img-circle" id="details-modal-face-image" src="">
-                </div>
-                <table class="table">
-                  <tbody>
-                    <tr>
-                      <th scope="row">ID Pegawai</th>
-                      <td id="details-modal-id"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Nama</th>
-                      <td id="details-modal-name"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Nama Panggilan</th>
-                      <td id="details-modal-nickname"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Jenis Kelamin</th>
-                      <td id="details-modal-gender"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Tipe Akun</th>
-                      <td id="details-modal-acc-type"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Unit</th>
-                      <td id="details-modal-unit"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Posisi</th>
-                      <td id="details-modal-position"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Email</th>
-                      <td id="details-modal-email"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Nomor Telepon</th>
-                      <td id="details-modal-phone-no"></td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Status Karyawan</th>
-                      <td id="details-modal-status"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+          <!-- Striped table start -->
+            <div class="text-center">
+              <img height="300" class="img-responsive img-circle" id="details-modal-face-image" src="">
             </div>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <th scope="row">Nama</th>
+                  <td id="details-modal-name"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Kapal</th>
+                  <td id="details-modal-ship"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Legalitas</th>
+                  <td id="details-modal-legality"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Alamat</th>
+                  <td id="details-modal-address"></td>
+                </tr>
+                <tr>
+                  <th scope="row">No. Telepon</th>
+                  <td id="details-modal-phone-number"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Key Person</th>
+                  <td id="details-modal-key-person"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Contact Person</th>
+                  <td id="details-modal-contact-person"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Perjanjian Kredit</th>
+                  <td id="details-modal-credit-aggreement"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Piutang Total</th>
+                  <td id="details-modal-total-credits"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Piutang Saat Ini</th>
+                  <td id="details-modal-reduced-credits"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Tenor</th>
+                  <td id="details-modal-tenor"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Tanggal Mulai</th>
+                  <td id="details-modal-start-date"></td>
+                </tr>
+                <tr>
+                  <th scope="row">Tanggal Selesai</th>
+                  <td id="details-modal-end-date"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -334,9 +342,9 @@ function inputDebtor(form) {
     success: function(res) {
       console.log(form.attr('action').split('/'))
       if (form.attr('action').split('/')[form.attr('action').split('/').length-1] == 'create') {
-        $.notify("Karyawan " + res['name'] + " berhasil ditambahkan!", {position: "top center", className: "success"});
+        $.notify("Debitur " + res['name'] + " berhasil ditambahkan!", {position: "top center", className: "success"});
       } else {
-        $.notify("Karyawan berhasil disunting!", {position: "top center", className: "success"});
+        $.notify("Debitur " + res['name'] + " berhasil disunting!", {position: "top center", className: "success"});
       }
 
       $('#debtorInputModal').modal('hide');
@@ -353,16 +361,20 @@ function getDebtorUpdateDetail(url) {
     url: url,
     type: "GET",
     success: function(res){
-      $('#input-modal-id').val(res['detail-person']['nik']);
+      console.log(res)
       $('#input-modal-name').val(res['name']);
-      $('#input-modal-nickname').val(res['detail-person']['nama_panggilan']);
-      $('#input-modal-gender').val(res['detail-person']['jenis_kelamin']);
-      $('#input-modal-acc-type').val(res['detail-person']['tipe_akun']);
-      $('#input-modal-unit').val(res['group_id']);
-      $('#input-modal-position').val(res['detail-person']['posisi']);
-      $('#input-modal-email').val(res['detail-person']['email']);
-      $('#input-modal-phone-no').val(res['detail-person']['no_telp']);
-      $('#input-modal-status').val(res['detail-person']['status_karyawan']);
+      $('#input-modal-ship').val(res['ship']);
+      $('#input-modal-legality').val(res['legality']);
+      $('#input-modal-address').val(res['address']);
+      $('#input-modal-phone-number').val(res['phone_number']);
+      $('#input-modal-key-person').val(res['key_person']);
+      $('#input-modal-contact-person').val(res['contact_person']);
+      $('#input-modal-credit-aggreement').val(res['credit_aggreement']);
+      $('#input-modal-total-credits').val(res['total_credits']);
+      $('#input-modal-reduced-credits').val(res['reduced_credits']);
+      $('#input-modal-tenor').val(res['tenor']);
+      $('#input-modal-start-date').val(res['start_date']);
+      $('#input-modal-end-date').val(res['end_date']);
     }
   });
 }
@@ -372,18 +384,20 @@ function getDebtorDetail(url, modal) {
     url: url,
     type: "GET",
     success: function(res){
-      $('#details-modal-face-image').attr('src', res['face_img'])
-      $('#debtorDetailsModalTitle').html('Detail Karyawan - ' + res['name']);
-      $('#details-modal-id').html(res['detail-person']['nik']);
+      $('#debtorDetailsModalTitle').html('Detail Debitur - ' + res['name']);
       $('#details-modal-name').html(res['name']);
-      $('#details-modal-nickname').html(res['detail-person']['nama_panggilan']);
-      $('#details-modal-gender').html(res['detail-person']['jenis_kelamin']);
-      $('#details-modal-acc-type').html(res['detail-person']['tipe_akun']);
-      $('#details-modal-unit').html(res['group_name']);
-      $('#details-modal-position').html(res['detail-person']['posisi']);
-      $('#details-modal-email').html(res['detail-person']['email']);
-      $('#details-modal-phone-no').html(res['detail-person']['no_telp']);
-      $('#details-modal-status').html(res['detail-person']['status_karyawan']);
+      $('#details-modal-ship').html(res['ship']);
+      $('#details-modal-legality').html(res['legality']);
+      $('#details-modal-address').html(res['address']);
+      $('#details-modal-phone-number').html(res['phone_number']);
+      $('#details-modal-key-person').html(res['key_person']);
+      $('#details-modal-contact-person').html(res['contact_person']);
+      $('#details-modal-credit-aggreement').html(res['credit_aggreement']);
+      $('#details-modal-total-credits').html(res['total_credits']);
+      $('#details-modal-reduced-credits').html(res['reduced_credits']);
+      $('#details-modal-tenor').html(res['tenor']);
+      $('#details-modal-start-date').html(res['fancy_start_date']);
+      $('#details-modal-end-date').html(res['fancy_end_date']);
 
       modal.modal('show');
     }
@@ -398,14 +412,13 @@ function deleteDebtor(url, name) {
     success: function(res){
       res = JSON.parse(res);
 
-      if (res.status_code == 200) {
-        $.notify('Karyawan ' + name + ' berhasil dihapus!', {position: 'top center', className: 'success'});
-        $('#debtorDeleteModal').modal('hide');
+      $.notify('Debitur ' + name + ' berhasil dihapus!', {position: 'top center', className: 'success'});
+      $('#debtorDeleteModal').modal('hide');
 
-        getDebtors();
-      } else {
-        alert('Some errors occured!');
-      }
+      getDebtors();
+    },
+    error: function(res) {
+      $.notify('Penghapusan debitur tidak berhasil. Silahkan coba lagi!',  {position: "top center", className: "error"})
     }
   });
 }

@@ -24,9 +24,10 @@ def list():
 
 @debtor.route('/<identifier>/detail', methods=['GET'])
 def detail(identifier):
-  res = {}
+  debtor = Debtor.query.get(identifier).to_dict()
+  debtor['reduced_credits'] = debtor['total_credits']
 
-  return jsonify(res), 200
+  return jsonify(debtor), 200
 
 @debtor.route('/create', methods=['POST', 'GET'])
 def create():
@@ -63,9 +64,28 @@ def create():
 @debtor.route('/<identifier>/update', methods=['POST', 'GET'])
 def update(identifier):
   try:
-    response = jsonify({"success": True})
+    debtor = Debtor.query.get(identifier)
+    debtor.name = request.form['name']
+    debtor.ship = request.form['ship']
+    debtor.legality = request.form['legality']
+    debtor.address = request.form['address']
+    debtor.phone_number = request.form['phone_number']
+    debtor.key_person = request.form['key_person']
+    debtor.contact_person = request.form['contact_person']
+    debtor.credit_aggreement = request.form['credit_aggreement']
+    debtor.total_credits = request.form['total_credits']
+    debtor.tenor = request.form['tenor']
+    debtor.start_date = datetime.strptime(request.form['start_date'], "%Y-%m-%d")
+    debtor.end_date = datetime.strptime(request.form['end_date'], "%Y-%m-%d")
+
+    db.session.commit()
+
+    response = jsonify({"success": True, 'name': request.form['name']})
     response.status_code = 200
-  except:
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+
     response = jsonify({"success": False})
     response.status_code = 500
 
@@ -74,9 +94,17 @@ def update(identifier):
 @debtor.route('<identifier>/delete', methods=['POST'])
 def delete(identifier):
   try:
+    debtor = Debtor.query.get(identifier)
+
+    db.session.delete(debtor)
+    db.session.commit()
+
     response = jsonify({"success": True})
     response.status_code = 200
-  except:
+  except Exception as e:
+    db.session.rollback()
+    print(e)
+
     response = jsonify({"success": False})
     response.status_code = 500
 

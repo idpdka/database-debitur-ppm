@@ -27,7 +27,7 @@ class Debtor(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     ship = db.Column(db.String(120))
     legality = db.Column(db.String(120))
-    address = db.Column(db.String(120))
+    address = db.Column(db.String)
     phone_number = db.Column(db.String(120))
     key_person = db.Column(db.String(120))
     contact_person = db.Column(db.String(120))
@@ -50,8 +50,10 @@ class Debtor(db.Model):
             'credit_aggreement': self.credit_aggreement,
             'total_credits': self.total_credits,
             'tenor': self.tenor,
-            'start_date': datetime.strftime(self.start_date, '%d %B %Y'),
-            'end_date': datetime.strftime(self.end_date, '%d %B %Y'),
+            'fancy_start_date': datetime.strftime(self.start_date, '%d %B %Y'),
+            'fancy_end_date': datetime.strftime(self.end_date, '%d %B %Y'),
+            'start_date': datetime.strftime(self.start_date, '%Y-%m-%d'),
+            'end_date': datetime.strftime(self.end_date, '%Y-%m-%d'),
         }
 
         return data
